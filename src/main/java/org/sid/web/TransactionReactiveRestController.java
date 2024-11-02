@@ -48,14 +48,17 @@ public class TransactionReactiveRestController {
         return transactionRepository.save(transaction);
     }
 
-//    @GetMapping(value = "/streamTransactions",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public Flux<Transaction> streamTransactions(){
-//        return transactionRepository.findAll();
-//    }
+    @GetMapping(value = "/streamTransactions",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Transaction> streamTransactions(){
+        return transactionRepository.findAll();
+    }
 
     @GetMapping(value = "/transactionsBySociete/{id}")
     public Flux<Transaction> transactionsBySoc(@PathVariable String id){
-        Societe societe=new Societe();societe.setNom(id);
+        Societe societe=new Societe();
+        societe.setNom(id);
+        societe.setCode(id);
+        societe.setPrice(105.0143805534874);
         return transactionRepository.findBysociete(societe);
     }
 
