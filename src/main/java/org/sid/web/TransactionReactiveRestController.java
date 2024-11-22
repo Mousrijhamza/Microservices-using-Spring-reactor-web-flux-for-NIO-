@@ -57,29 +57,30 @@ public class TransactionReactiveRestController {
     public Flux<Transaction> transactionsBySoc(@PathVariable String id){
         Societe societe=new Societe();
         societe.setNom(id);
-        societe.setCode(id);
-        societe.setPrice(105.0143805534874);
-        return transactionRepository.findBysociete(societe);
+        System.out.println(societe);
+        return transactionRepository.findTransactionsBySociete_Nom(id);
     }
 
-//    @GetMapping(value = "/streamTransactionsBySociete/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public Flux<Transaction> stream(@PathVariable String id){
-//        return societeRepository.findById(id)
-//                .flatMapMany(soc->{
-//                    Flux<Long> interval=Flux.interval(Duration.ofMillis(1000));
-//                    Flux<Transaction> transactionFlux= Flux.fromStream(Stream.generate(()->{
-//                        Transaction transaction=new Transaction();
-//                        transaction.setStart(Instant.now());
-//                        transaction.setSociete(soc);
-//                        transaction.setPrice(soc.getPrice()*(1+(Math.random()*12-6)/100));
-//                        return transaction;
-//                    }));
-//                    return Flux.zip(interval,transactionFlux)
-//                            .map(data->{
-//                                return data.getT2();
-//                            }).share();
-//                });
-//    }
+    @GetMapping(value = "/streamTransactionsBySociete/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Transaction> stream(@PathVariable String id){
+        return societeRepository.findById(id)
+                .flatMapMany(soc->{  // faltMapMany return a flux whereas map return a mono
+                    // Convertit un Mono (société trouvée) en un Flux (flux de transactions),
+                    // car nous générons plusieurs transactions pour une société.
+                    Flux<Long> interval=Flux.interval(Duration.ofMillis(1000));
+                    Flux<Transaction> transactionFlux= Flux.fromStream(Stream.generate(()->{
+                        Transaction transaction=new Transaction();
+                        transaction.setStart(Instant.now());
+                        transaction.setSociete(soc);
+                        transaction.setPrice(soc.getPrice()*(1+(Math.random()*12-6)/100));
+                        return transaction;
+                    }));
+                    return Flux.zip(interval,transactionFlux)
+                            .map(data->{
+                                return data.getT2();
+                            }).share();
+                });
+    }
 
 //    @GetMapping(value = "/events/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 //    public  Flux<Double>   events(@PathVariable String id){

@@ -46,6 +46,6 @@ public class Transaction {
     private double price;
 
 //    @DBRef
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Societe societe; // Reference to User document
 }

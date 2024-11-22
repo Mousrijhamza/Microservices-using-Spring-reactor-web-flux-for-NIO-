@@ -23,6 +23,7 @@ public class WebFluxReactiveApplication {
     CommandLineRunner start(SocieteRepository societeRepository,
                             TransactionRepository transactionRepository){
         return args->{
+
             societeRepository.deleteAll().subscribe(null,null,()->{
                 Stream.of("SG","AWB","BMCE","AXA").forEach(s->{
                     societeRepository.save(new Societe(s,s,100+Math.random()*900))
