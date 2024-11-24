@@ -82,25 +82,27 @@ public class TransactionReactiveRestController {
                 });
     }
 
-//    @GetMapping(value = "/events/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public  Flux<Double>   events(@PathVariable String id){
-//        WebClient webClient=WebClient.create("http://localhost:8082");
-//        Flux<Double> eventFlux=webClient.get()
-//                .uri("/streamEvents/"+id)
-//                .retrieve().bodyToFlux(Event.class)
-//                .map(data->data.getValue());
-//        return eventFlux;
-//
-//    }
-//    @GetMapping("/test")
-//    public String test(){
-//        return Thread.currentThread().getName();
-//    }
+    @GetMapping(value = "/events/{id}",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public  Flux<Double>   events(@PathVariable String id){
+        WebClient webClient=WebClient.create("http://localhost:8082");
+
+
+        Flux<Double> eventFlux=webClient.get()
+                .uri("/streamEvents/"+id)
+                .retrieve().bodyToFlux(Event.class)
+                .map(data->data.getValue());
+        return eventFlux;
+
+    }
+    @GetMapping("/test")
+    public String test(){
+        return Thread.currentThread().getName();
+    }
 
 }
-//@Data
-//class Event{
-//    private Instant instant;
-//    private double value;
-//    private String societeID;
-//}
+@Data
+class Event{
+    private Instant instant;
+    private double value;
+    private String societeID;
+}
